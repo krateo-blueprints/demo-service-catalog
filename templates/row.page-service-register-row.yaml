@@ -1,0 +1,19 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Row
+metadata:
+  name: page-service-register-row
+  namespace: krateo-system
+spec:
+  resourcesRefs:
+    items:
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: page-service-register-row-card
+        name: page-service-register-row-card
+        namespace: krateo-system
+        resource: cards
+        verb: GET
+  widgetData:
+    allowedResources:
+      - cards
+    items:
+      - resourceRefId: page-service-register-row-card
