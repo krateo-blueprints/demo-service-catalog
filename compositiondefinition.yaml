@@ -1,0 +1,16 @@
+# REGISTERS this page set as installable. Apply the STAMPED copy from the GitHub release, not this
+# one: the branch carries the CHART_VERSION placeholder, and registering that pins a chart version
+# that was never published.
+#
+#   kubectl apply -f https://github.com/krateo-blueprints/pod-sizing-v1/releases/download/<tag>/compositiondefinition.yaml
+#
+# Install it WHERE THE PORTAL IS — the pages must land in namespaces the portal's RBAC covers.
+apiVersion: core.krateo.io/v1alpha1
+kind: CompositionDefinition
+metadata:
+  name: pod-sizing-v1
+  namespace: krateo-system
+spec:
+  chart:
+    url: oci://ghcr.io/krateo-blueprints/charts/pod-sizing-v1
+    version: CHART_VERSION
