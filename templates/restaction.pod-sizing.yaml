@@ -1,0 +1,13 @@
+apiVersion: templates.krateo.io/v1
+kind: RESTAction
+metadata:
+  name: pod-sizing
+  namespace: krateo-system
+spec:
+  api:
+    - headers:
+        - 'Accept: application/json'
+      name: src
+      path: /api/v1/namespaces/krateo-system/pods
+      verb: GET
+  filter: '{ rows: [ (.src.items // [])[]? | { c1: ((try (.metadata.name) catch null) | if . == null then "" else tostring end), c2: ((try (.spec.containers[0].resources.requests.cpu) catch null) | if . == null then "" else tostring end), c3: ((try (.spec.containers[0].resources.limits.cpu) catch null) | if . == null then "" else tostring end), c4: ((try (.status.phase) catch null) | if . == null then "" else tostring end) } ] }'

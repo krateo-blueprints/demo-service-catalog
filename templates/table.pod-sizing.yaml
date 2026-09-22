@@ -1,0 +1,26 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Table
+metadata:
+  name: pod-sizing
+  namespace: krateo-system
+spec:
+  apiRef:
+    name: pod-sizing
+    namespace: krateo-system
+  resourcesRefs:
+    items: []
+  widgetData:
+    allowedResources: []
+    columns:
+      - title: Pod
+        valueKey: c1
+      - title: CPU request
+        valueKey: c2
+      - title: CPU limit
+        valueKey: c3
+      - title: Phase
+        valueKey: c4
+    dataSource: []
+  widgetDataTemplate:
+    - expression: ${ [ .rows[] | [ {valueKey:"c1",kind:"jsonSchemaType",type:"string",stringValue:.c1}, {valueKey:"c2",kind:"jsonSchemaType",type:"string",stringValue:.c2}, {valueKey:"c3",kind:"jsonSchemaType",type:"string",stringValue:.c3}, {valueKey:"c4",kind:"jsonSchemaType",type:"string",stringValue:.c4} ] ] }
+      forPath: dataSource
