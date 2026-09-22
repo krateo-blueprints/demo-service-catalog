@@ -1,0 +1,32 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Flex
+metadata:
+  annotations:
+    krateo.io/nav-label: Service register
+    krateo.io/nav-order: '100'
+    krateo.io/nav-path: /service-register
+  name: page-service-register
+  namespace: '{{ include "page.tierNamespace" (dict "ctx" . "tier" "common") }}'
+spec:
+  resourcesRefs:
+    items:
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: page-service-register-header
+        name: page-service-register-header
+        namespace: '{{ include "page.tierNamespace" (dict "ctx" . "tier" "common") }}'
+        resource: pageheaders
+        verb: GET
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: page-service-register-row
+        name: page-service-register-row
+        namespace: krateo-system
+        resource: rows
+        verb: GET
+  widgetData:
+    allowedResources:
+      - rows
+    gap: middle
+    items:
+      - resourceRefId: page-service-register-header
+      - resourceRefId: page-service-register-row
+    vertical: true
