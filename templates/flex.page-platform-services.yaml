@@ -1,0 +1,32 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Flex
+metadata:
+  annotations:
+    krateo.io/nav-label: Platform services
+    krateo.io/nav-order: '100'
+    krateo.io/nav-path: /platform-services
+  name: page-platform-services
+  namespace: '{{ include "page.tierNamespace" (dict "ctx" . "tier" "common") }}'
+spec:
+  resourcesRefs:
+    items:
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: page-platform-services-header
+        name: page-platform-services-header
+        namespace: '{{ include "page.tierNamespace" (dict "ctx" . "tier" "common") }}'
+        resource: pageheaders
+        verb: GET
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: page-platform-services-row
+        name: page-platform-services-row
+        namespace: krateo-system
+        resource: rows
+        verb: GET
+  widgetData:
+    allowedResources:
+      - rows
+    gap: middle
+    items:
+      - resourceRefId: page-platform-services-header
+      - resourceRefId: page-platform-services-row
+    vertical: true
