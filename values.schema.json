@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "description": "Krateo Composable Portal pages — composer-demo-921a.",
+  "properties": {
+    "tiers": {
+      "additionalProperties": false,
+      "description": "Which namespace this page set is created in. Empty = the release namespace.",
+      "properties": {
+        "common": {
+          "default": "",
+          "title": "Namespace",
+          "type": "string"
+        }
+      },
+      "title": "Namespace tiers",
+      "type": "object"
+    }
+  },
+  "title": "composer-demo-921a",
+  "type": "object"
+}
