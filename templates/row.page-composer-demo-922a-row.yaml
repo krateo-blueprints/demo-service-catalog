@@ -1,0 +1,13 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Row
+metadata:
+  annotations:
+    krateo.io/allowed-resources: derived
+  name: page-composer-demo-922a-row
+  namespace: krateo-system
+spec:
+  resourcesRefs:
+    items: []
+  widgetData:
+    allowedResources: []
+    items: []
