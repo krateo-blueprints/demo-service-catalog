@@ -1,0 +1,21 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Row
+metadata:
+  annotations:
+    krateo.io/allowed-resources: derived
+  name: page-pod-sizing-demo-row
+  namespace: krateo-system
+spec:
+  resourcesRefs:
+    items:
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: pod-sizing-demo-table
+        name: pod-sizing-demo-table
+        namespace: krateo-system
+        resource: tables
+        verb: GET
+  widgetData:
+    allowedResources:
+      - tables
+    items:
+      - resourceRefId: pod-sizing-demo-table
