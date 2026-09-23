@@ -1,0 +1,13 @@
+apiVersion: templates.krateo.io/v1
+kind: RESTAction
+metadata:
+  name: platform-alerts
+  namespace: krateo-system
+spec:
+  api:
+    - headers:
+        - 'Accept: application/json'
+      name: src
+      path: /apis/observability.krateo.io/v1alpha1/namespaces/krateo-system/alerts
+      verb: GET
+  filter: '{ rows: [ (.src.items // [])[]? | { c1: ((try (.spec.displayName) catch null) | if . == null then "" else tostring end), c2: ((try (.status.state) catch null) | if . == null then "" else tostring end) } ] }'

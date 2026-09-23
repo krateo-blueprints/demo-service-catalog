@@ -1,0 +1,22 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Table
+metadata:
+  name: platform-alerts
+  namespace: krateo-system
+spec:
+  apiRef:
+    name: platform-alerts
+    namespace: krateo-system
+  resourcesRefs:
+    items: []
+  widgetData:
+    allowedResources: []
+    columns:
+      - title: Alert
+        valueKey: c1
+      - title: State
+        valueKey: c2
+    dataSource: []
+  widgetDataTemplate:
+    - expression: ${ [ .rows[] | [ {valueKey:"c1",kind:"jsonSchemaType",type:"string",stringValue:.c1}, {valueKey:"c2",kind:"jsonSchemaType",type:"string",stringValue:.c2} ] ] }
+      forPath: dataSource
