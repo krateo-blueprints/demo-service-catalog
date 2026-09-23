@@ -1,0 +1,42 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Flex
+metadata:
+  annotations:
+    krateo.io/allowed-resources: derived
+    krateo.io/nav-label: Composer demo
+    krateo.io/nav-order: '100'
+    krateo.io/nav-path: /composer-demo-922a
+  name: page-composer-demo-922a
+  namespace: '{{ include "page.tierNamespace" (dict "ctx" . "tier" "common") }}'
+spec:
+  resourcesRefs:
+    items:
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: page-composer-demo-922a-row
+        name: page-composer-demo-922a-row
+        namespace: krateo-system
+        resource: rows
+        verb: GET
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: page-composer-demo-922a-header
+        name: page-composer-demo-922a-header
+        namespace: '{{ include "page.tierNamespace" (dict "ctx" . "tier" "common") }}'
+        resource: pageheaders
+        verb: GET
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: platform-alerts
+        name: platform-alerts
+        namespace: krateo-system
+        resource: tables
+        verb: GET
+  widgetData:
+    allowedResources:
+      - rows
+      - pageheaders
+      - tables
+    gap: middle
+    items:
+      - resourceRefId: page-composer-demo-922a-row
+      - resourceRefId: page-composer-demo-922a-header
+      - resourceRefId: platform-alerts
+    vertical: true

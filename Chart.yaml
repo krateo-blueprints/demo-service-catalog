@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: CHART_VERSION
+description: Krateo Composable Portal pages — composer-demo-922a.
+name: composer-demo-922a
+type: application
+version: CHART_VERSION
