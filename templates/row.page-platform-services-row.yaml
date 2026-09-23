@@ -1,0 +1,19 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Row
+metadata:
+  name: page-platform-services-row
+  namespace: krateo-system
+spec:
+  resourcesRefs:
+    items:
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: page-platform-services-row-card
+        name: page-platform-services-row-card
+        namespace: krateo-system
+        resource: cards
+        verb: GET
+  widgetData:
+    allowedResources:
+      - cards
+    items:
+      - resourceRefId: page-platform-services-row-card
