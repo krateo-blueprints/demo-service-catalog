@@ -1,0 +1,33 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Flex
+metadata:
+  annotations:
+    krateo.io/allowed-resources: derived
+    krateo.io/nav-label: Pod sizing
+    krateo.io/nav-order: '100'
+    krateo.io/nav-path: /pod-sizing-e7
+  name: page-pod-sizing-e7
+  namespace: '{{ include "page.tierNamespace" (dict "ctx" . "tier" "common") }}'
+spec:
+  resourcesRefs:
+    items:
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: page-pod-sizing-e7-header
+        name: page-pod-sizing-e7-header
+        namespace: '{{ include "page.tierNamespace" (dict "ctx" . "tier" "common") }}'
+        resource: pageheaders
+        verb: GET
+      - apiVersion: widgets.templates.krateo.io/v1beta1
+        id: pods-sizing-table
+        name: pods-sizing-table
+        namespace: krateo-system
+        resource: tables
+        verb: GET
+  widgetData:
+    allowedResources:
+      - tables
+    gap: middle
+    items:
+      - resourceRefId: page-pod-sizing-e7-header
+      - resourceRefId: pods-sizing-table
+    vertical: true
