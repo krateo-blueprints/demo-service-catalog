@@ -1,0 +1,25 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Table
+metadata:
+  name: pod-sizing-table
+  namespace: krateo-system
+spec:
+  widgetDataTemplate:
+  - expression: ${ [ .rows[] | [ {valueKey:"name",kind:"jsonSchemaType",type:"string",stringValue:.name}, {valueKey:"cpuRequest",kind:"jsonSchemaType",type:"string",stringValue:.cpuRequest}, {valueKey:"cpuUsage",kind:"jsonSchemaType",type:"string",stringValue:.cpuUsage}, {valueKey:"verdict",kind:"tag",type:"string",stringValue:.verdict,color:.color} ] ] }
+    forPath: dataSource
+  apiRef:
+    name: krateo-system-pod-sizing
+    namespace: krateo-system
+  resourcesRefs:
+    items: []
+  widgetData:
+    columns:
+      - title: Pod
+        valueKey: name
+      - title: CPU Request
+        valueKey: cpuRequest
+      - title: CPU Usage
+        valueKey: cpuUsage
+      - title: Provisioning Status
+        valueKey: verdict
+    allowedResources: []

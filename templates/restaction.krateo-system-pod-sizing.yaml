@@ -1,0 +1,20 @@
+apiVersion: templates.krateo.io/v1
+kind: RESTAction
+metadata:
+  name: krateo-system-pod-sizing
+  namespace: krateo-system
+spec:
+  api:
+    - headers:
+        - 'Accept: application/json'
+      name: pods
+      path: /api/v1/namespaces/krateo-system/pods
+      verb: GET
+    - headers:
+        - 'Accept: application/json'
+      name: metrics
+      path: /apis/metrics.k8s.io/v1beta1/namespaces/krateo-system/pods
+      verb: GET
+      dependsOn:
+        name: pods
+  filter: 'include "quantity"; ([ .metrics.items[]? | { (.metadata.name): ([ .containers[].usage.cpu // empty ] | sum_quantities) } ] | add // {}) as $metrics | { rows: [ .pods.items[]? | .metadata.name as $name | ([ .spec.containers[].resources.requests.cpu // empty ] | sum_quantities) as $req | $metrics[$name] as $use | utilization_pct($use; $req) as $pct | provisioning_verdict($pct) as $verdict | { name: $name, cpuRequest: (if $req == null then "none" else ((($req * 10000 | round) / 10 | tostring) + "m") end), cpuUsage: (if $use == null then "N/A" else ((($use * 10000 | round) / 10 | tostring) + "m") end), verdict: $verdict, color: (if $verdict == "Overprovisioned" then "orange" elif $verdict == "Right-sized" then "green" elif $verdict == "Underprovisioned" then "red" else "gray" end) } ] }'
