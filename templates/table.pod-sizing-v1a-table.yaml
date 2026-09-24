@@ -1,0 +1,27 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Table
+metadata:
+  name: pod-sizing-v1a-table
+  namespace: krateo-system
+spec:
+  widgetDataTemplate:
+  - expression: ${ .items }
+    forPath: dataSource
+  apiRef:
+    name: pod-sizing-v1a-query
+    namespace: krateo-system
+  resourcesRefs:
+    items: []
+  widgetData:
+    allowedResources: []
+    columns:
+      - title: Pod
+        valueKey: pod
+      - title: Requested
+        valueKey: requested
+      - title: Used
+        valueKey: used
+      - title: Utilization
+        valueKey: utilization
+      - title: Verdict
+        valueKey: verdict

@@ -1,0 +1,53 @@
+apiVersion: templates.krateo.io/v1
+kind: RESTAction
+metadata:
+  name: pod-sizing-v1a-query
+  namespace: krateo-system
+spec:
+  api:
+    - headers:
+        - 'Accept: application/json'
+      name: pods
+      path: /api/v1/namespaces/krateo-system/pods
+      verb: GET
+    - headers:
+        - 'Accept: application/json'
+      name: metrics
+      path: /apis/metrics.k8s.io/v1beta1/namespaces/krateo-system/pods
+      verb: GET
+  filter: |-
+    include "quantity";
+    . as $r
+    | { items: [
+          $r.pods.items[] as $p
+          | ([ $r.metrics.items[] | select(.metadata.name == $p.metadata.name) ] | first) as $m
+          | ([ $p.spec.containers[].resources.requests.cpu // empty ] | sum_quantities) as $req
+          | ([ (($m.containers // [])[]).usage.cpu ] | sum_quantities) as $use
+          | utilization_pct($use; $req) as $pct
+          | provisioning_verdict($pct) as $v
+          # ORDERED FOR THE QUESTION BEING ASKED, which is not the module's default order.
+          # provisioning_severity ranks Underprovisioned above Overprovisioned, and it is right to:
+          # throttling a workload now is worse than paying for capacity nobody uses. But this page asks
+          # "what is oversized", and under that ranking the first sixteen rows were all
+          # Underprovisioned — so on a virtualized table showing thirteen, the word Overprovisioned
+          # never appeared at all. The subject of the page has to be on the first screen.
+          # Within each group the WORST case leads: the emptiest reservation for the overprovisioned,
+          # the most throttled for the underprovisioned.
+          | ({ "Overprovisioned": 3, "Underprovisioned": 2, "Unknown": 1, "Right-sized": 0 }[$v]) as $grp
+          | (if $v == "Overprovisioned" then -($pct // 0) else ($pct // -1) end) as $worst
+          | { rank: [ $grp, $worst ],
+              row: [
+                { kind: "jsonSchemaType", type: "string", valueKey: "pod",
+                  stringValue: $p.metadata.name },
+                { kind: "jsonSchemaType", type: "string", valueKey: "requested",
+                  stringValue: (if $req == null then "—" else (($req*1000|round|tostring) + "m") end) },
+                { kind: "jsonSchemaType", type: "string", valueKey: "used",
+                  stringValue: (if $use == null then "—" else (($use*1000|round|tostring) + "m") end) },
+                { kind: "jsonSchemaType", type: "string", valueKey: "utilization",
+                  stringValue: (if $pct == null then "—" else (($pct|tostring) + "%") end) },
+                { kind: "tag", valueKey: "verdict", stringValue: $v,
+                  color: ({ "Underprovisioned": "red", "Overprovisioned": "gold",
+                            "Right-sized": "green", "Unknown": "default" }[$v]) }
+              ] }
+        ]
+        | sort_by(.rank) | reverse | map(.row) }
