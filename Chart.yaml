@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: CHART_VERSION
+description: Krateo Composable Portal pages — pod-sizing-v2a.
+name: pod-sizing-v2a
+type: application
+version: CHART_VERSION
