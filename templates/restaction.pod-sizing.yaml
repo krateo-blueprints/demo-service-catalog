@@ -1,0 +1,38 @@
+apiVersion: templates.krateo.io/v1
+kind: RESTAction
+metadata:
+  name: pod-sizing
+  namespace: krateo-system
+spec:
+  api:
+    - headers:
+        - 'Accept: application/json'
+      name: pods
+      path: /api/v1/namespaces/krateo-system/pods
+      verb: GET
+    - headers:
+        - 'Accept: application/json'
+      name: metrics
+      path: /apis/metrics.k8s.io/v1beta1/namespaces/krateo-system/pods
+      verb: GET
+      dependsOn:
+        name: pods
+  filter: |-
+    include "quantity";
+    ([ .metrics.items[]? | { key: .metadata.name, value: ([ .containers[]?.usage.cpu // empty ] | sum_quantities) } ] | from_entries) as $usageMap
+    | {
+        items: [
+          .pods.items[]?
+          | .metadata.name as $name
+          | ([ .spec.containers[]?.resources.requests.cpu // empty ] | sum_quantities) as $req
+          | ($usageMap[$name]) as $usage
+          | (utilization_pct($usage; $req)) as $pct
+          | {
+              name: $name,
+              cpuRequest: (if $req == null then "-" else "\($req * 1000 | round)m" end),
+              cpuUsage: (if $usage == null then "-" else "\((($usage * 10000 | round) / 10))m" end),
+              pct: $pct,
+              verdict: provisioning_verdict($pct)
+            }
+        ]
+      }
