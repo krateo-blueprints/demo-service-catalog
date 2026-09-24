@@ -1,0 +1,25 @@
+apiVersion: widgets.templates.krateo.io/v1beta1
+kind: Table
+metadata:
+  name: pod-sizing-table
+  namespace: krateo-system
+spec:
+  widgetDataTemplate:
+  - expression: '${ [ .items[]? | [ {valueKey: "name", kind: "jsonSchemaType", type: "string", stringValue: .name}, {valueKey: "cpuRequest", kind: "jsonSchemaType", type: "string", stringValue: .cpuRequest}, {valueKey: "cpuUsage", kind: "jsonSchemaType", type: "string", stringValue: .cpuUsage}, {valueKey: "verdict", kind: "tag", stringValue: .verdict, color: (if .verdict == "Overprovisioned" then "orange" elif .verdict == "Underprovisioned" then "red" elif .verdict == "Right-sized" then "green" else "default" end)} ] ] }'
+    forPath: dataSource
+  apiRef:
+    name: pod-sizing
+    namespace: krateo-system
+  resourcesRefs:
+    items: []
+  widgetData:
+    columns:
+      - title: Pod Name
+        valueKey: name
+      - title: CPU Request
+        valueKey: cpuRequest
+      - title: CPU Usage
+        valueKey: cpuUsage
+      - title: Overprovisioned
+        valueKey: verdict
+    allowedResources: []
